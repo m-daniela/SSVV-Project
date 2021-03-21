@@ -58,7 +58,7 @@ public class StudentXMLRepo extends AbstractXMLRepository<String, Student> {
         e.appendChild(email);
 
         Element profesor = document.createElement("profesor");
-        email.setTextContent(entity.getTeacher());
+        profesor.setTextContent(entity.getTeacher());
         e.appendChild(profesor);
 
         return e;

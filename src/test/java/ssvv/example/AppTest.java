@@ -37,11 +37,17 @@ public class AppTest
     }
 
     private Student getValidStudent(){
-        return new Student("id1","John",935,"john@gmail.com", "A");
+        return new Student("id12","John",935,"john@gmail.com", "A");
     }
 
     private Student getStudentWithEmptyName(){
         return new Student("id2","",935,"john@gmail.com", "A");
+    }
+    private Student getStudentWithInvalidTeacherName(){
+        return new Student("id8","Jack",925,"john@gmail.com", null);
+    }
+    private Student getStudentWithInvalidId(){
+        return new Student("","Jim",925,"john@gmail.com", "A");
     }
     @Test
     public void addStudentWithValidName_ShouldReturnTrue()
@@ -62,6 +68,59 @@ public class AppTest
     {
         initialize();
         Student student = getStudentWithEmptyName();
+        try{
+            service.addStudent(student);
+            assert(false);
+        }catch (Exception ex){
+            assert(true);
+        }
+    }
+
+
+    @Test
+    public void addStudentWithValidTeacherName_ShouldReturnTrue()
+    {
+        initialize();
+        Student student = getValidStudent();
+        try{
+            Student addedStudent = service.addStudent(student);
+            assert(addedStudent == student);
+        }catch (Exception ex){
+            assert(false);
+        }
+    }
+
+    @Test
+    public void addStudentWithInvalidTeacherName_ShouldReturnFalse()
+    {
+        initialize();
+        Student student = getStudentWithInvalidTeacherName();
+        try{
+            service.addStudent(student);
+            assert(false);
+        }catch (Exception ex){
+            assert(true);
+        }
+    }
+
+    @Test
+    public void addStudentWithValidId_ShouldReturnTrue()
+    {
+        initialize();
+        Student student = getValidStudent();
+        try{
+            Student addedStudent = service.addStudent(student);
+            assert(addedStudent == student);
+        }catch (Exception ex){
+            assert(false);
+        }
+    }
+
+    @Test
+    public void addStudentWithInvalidId_ShouldReturnFalse()
+    {
+        initialize();
+        Student student = getStudentWithInvalidId();
         try{
             service.addStudent(student);
             assert(false);
