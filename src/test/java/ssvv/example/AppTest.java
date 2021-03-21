@@ -37,11 +37,11 @@ public class AppTest
     }
 
     private Student getValidStudent(){
-        return new Student("id1","John",935,"john@gmail.com");
+        return new Student("id1","John",935,"john@gmail.com", "A");
     }
 
     private Student getStudentWithEmptyName(){
-        return new Student("id2","",935,"john@gmail.com");
+        return new Student("id2","",935,"john@gmail.com", "A");
     }
     @Test
     public void addStudentWithValidName_ShouldReturnTrue()

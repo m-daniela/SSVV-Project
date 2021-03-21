@@ -8,6 +8,7 @@ public class Student implements HasID<String> {
     private String nume;
     private int grupa;
     private String email;
+    private String teacher;
 
     /**
      * Class Constructor
@@ -16,11 +17,12 @@ public class Student implements HasID<String> {
      * @param grupa - grupa studentului
      * @param email - emailul unui student
      */
-    public Student(String idStudent, String nume, int grupa, String email) {
+    public Student(String idStudent, String nume, int grupa, String email, String teacher) {
         this.idStudent = idStudent;
         this.nume = nume;
         this.grupa = grupa;
         this.email = email;
+        this.teacher = teacher;
     }
 
     /**
@@ -81,6 +83,14 @@ public class Student implements HasID<String> {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
     }
 
     /**
