@@ -55,6 +55,14 @@ public class AppTest {
         return new Student("id2", "John", 2, "", "A");
     }
 
+    private Student getStudentWithNullEmail() {
+        return new Student("id2", "John", 2, null, "A");
+    }
+
+    private Student getStudentWithNullName() {
+        return new Student("id2", null, 2, "john@gmail.com", "A");
+    }
+
     @Test
     public void addValidStudent_ShouldReturnTrue() {
         Student student = getValidStudent();
@@ -69,6 +77,17 @@ public class AppTest {
     @Test
     public void addStudentWithInvalidName_ShouldReturnFalse() {
         Student student = getStudentWithEmptyName();
+        try {
+            service.addStudent(student);
+            assert (false);
+        } catch (Exception ex) {
+            assert (true);
+        }
+    }
+
+    @Test
+    public void addStudentWithNullName_ShouldReturnFalse() {
+        Student student = getStudentWithNullName();
         try {
             service.addStudent(student);
             assert (false);
@@ -102,6 +121,17 @@ public class AppTest {
     @Test
     public void addStudentWithEmptyEmail_ShouldReturnFalse() {
         Student student = getStudentWithEmptyEmail();
+        try {
+            service.addStudent(student);
+            assert (false);
+        } catch (Exception ex) {
+            assert (true);
+        }
+    }
+
+    @Test
+    public void addStudentWithNullEmail_ShouldReturnFalse() {
+        Student student = getStudentWithNullEmail();
         try {
             service.addStudent(student);
             assert (false);
