@@ -42,6 +42,12 @@ public class AppTest {
     private Student getStudentWithEmptyName() {
         return new Student("id2", "", 935, "john@gmail.com", "A");
     }
+    private Student getStudentWithInvalidTeacherName(){
+        return new Student("id8","Jack",925,"john@gmail.com", null);
+    }
+    private Student getStudentWithInvalidId(){
+        return new Student("","Jim",925,"john@gmail.com", "A");
+    }
 
     private Student getStudentWithEmptyGroup() {
         return new Student("id2", "John", 0, "john@gmail.com", "A");
@@ -100,7 +106,8 @@ public class AppTest {
     public void addStudentWithNoGroup_ShouldReturnFalse() {
         Student student = getStudentWithEmptyGroup();
         try {
-            service.addStudent(student);
+            Student addedStudent = service.addStudent(student);
+            System.out.println(addedStudent);
             assert (false);
         } catch (Exception ex) {
             assert (true);
@@ -204,6 +211,56 @@ public class AppTest {
             assert (addedStudent == student);
         } catch (Exception ex) {
             assert (false);
+        }
+    }
+
+
+    @Test
+    public void addStudentWithValidTeacherName_ShouldReturnTrue()
+    {
+        Student student = getValidStudent();
+        try{
+            Student addedStudent = service.addStudent(student);
+            assert(addedStudent == student);
+        }catch (Exception ex){
+            assert(false);
+        }
+    }
+
+    @Test
+    public void addStudentWithInvalidTeacherName_ShouldReturnFalse()
+    {
+        Student student = getStudentWithInvalidTeacherName();
+        try{
+            service.addStudent(student);
+            assert(false);
+        }catch (Exception ex){
+            assert(true);
+        }
+    }
+
+    @Test
+    public void addStudentWithValidId_ShouldReturnTrue()
+    {
+        Student student = getValidStudent();
+        try{
+            Student addedStudent = service.addStudent(student);
+
+            assert(addedStudent == student);
+        }catch (Exception ex){
+            assert(false);
+        }
+    }
+
+    @Test
+    public void addStudentWithInvalidId_ShouldReturnFalse()
+    {
+        Student student = getStudentWithInvalidId();
+        try{
+            service.addStudent(student);
+            assert(false);
+        }catch (Exception ex){
+            assert(true);
         }
     }
 

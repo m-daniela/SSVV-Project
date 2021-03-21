@@ -98,6 +98,6 @@ public class Student implements HasID<String> {
      */
     @Override
     public String toString() {
-        return idStudent + "," + nume + "," + grupa + "," + email;
+        return idStudent + "," + nume + "," + grupa + "," + email + ", " + teacher;
     }
 }
