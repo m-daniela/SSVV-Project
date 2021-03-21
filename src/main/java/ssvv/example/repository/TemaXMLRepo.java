@@ -23,7 +23,7 @@ public class TemaXMLRepo extends AbstractXMLRepository<String, Tema> {
     @Override
     public Tema extractEntity(Element element) {
         String nrTema = element.getAttribute("nrTema");
-        NodeList nods = element.getChildNodes();
+
         String descriere =element.getElementsByTagName("descriere")
                 .item(0)
                 .getTextContent();
@@ -53,13 +53,13 @@ public class TemaXMLRepo extends AbstractXMLRepository<String, Tema> {
         e.appendChild(descriere);
 
         Element deadline = document.createElement("deadline");
-        Integer g=entity.getDeadline();
-        deadline.setTextContent(g.toString());
+        int dataDeadline = entity.getDeadline();
+        deadline.setTextContent(String.valueOf(dataDeadline));
         e.appendChild(deadline);
 
         Element primire = document.createElement("primire");
-        Integer p=entity.getPrimire();
-        primire.setTextContent(p.toString());
+        int dataPrimire = entity.getPrimire();
+        primire.setTextContent(String.valueOf(dataPrimire));
         e.appendChild(primire);
 
         return e;

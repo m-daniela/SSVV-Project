@@ -4,7 +4,9 @@ package ssvv.example.view;
 import ssvv.example.domain.Nota;
 import ssvv.example.domain.Student;
 import ssvv.example.domain.Tema;
-import ssvv.example.service.Service;
+import ssvv.example.service.NotaService;
+import ssvv.example.service.StudentService;
+import ssvv.example.service.TemaService;
 import ssvv.example.validation.ValidationException;
 
 import java.time.LocalDate;
@@ -15,14 +17,20 @@ import java.util.Scanner;
  * Interfata utilizator de tip consola
  */
 public class UI {
-    private Service service;
+    private StudentService studentService;
+    private TemaService temaService;
+    private NotaService notaService;
 
     /**
      * Class constructor
-     * @param service - service-ul clasei
+     * @param studentService - service studenti
+     * @param temaService - service teme
+     * @param notaService - service note
      */
-    public UI(Service service) {
-        this.service = service;
+    public UI(StudentService studentService, TemaService temaService, NotaService notaService) {
+        this.studentService = studentService;
+        this.temaService = temaService;
+        this.notaService = notaService;
     }
 
     /**
@@ -40,17 +48,12 @@ public class UI {
                 Scanner scanner = new Scanner(System.in);
                 System.out.print("Introduceti comanda: ");
                 int comanda = scanner.nextInt();
-                if (comanda == 0) {
-                    System.out.println("La revedere!");
-                    break;
-                } else if (comanda == 1) {
-                    meniuStudent();
-                } else if (comanda == 2) {
-                    meniuTeme();
-                } else if (comanda == 3) {
-                    meniuNote();
-                } else {
-                    System.out.println("Comanda invalida!");
+                switch (comanda){
+                    case 0: System.out.println("La revedere!"); return;
+                    case 1: meniuStudent(); break;
+                    case 2: meniuTeme(); break;
+                    case 3: meniuNote(); break;
+                    default: System.out.println("Comanda invalida!");
                 }
             } catch (ValidationException exception) {
                 System.out.println(exception.getMessage());
@@ -67,31 +70,50 @@ public class UI {
      */
     private void meniuStudent() {
         while (true) {
-            System.out.println("\n0.Iesire meniu student");
-            System.out.println("1.Introducere student");
-            System.out.println("2.Stergere student");
-            System.out.println("3.Cautare student");
-            System.out.println("4.Modificare student");
-            System.out.println("5.Afisare lista studenti");
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("Introduceti comanda: ");
-            int comanda = scanner.nextInt();
-            if (comanda == 0) {
-                break;
-            } else if (comanda == 1) {
-                adaugaStudent();
-            } else if (comanda == 2) {
-                stergeStudent();
-            } else if (comanda == 3) {
-                cautareStudent();
-            } else if (comanda == 4) {
-                updateStudent();
-            } else if (comanda == 5) {
-                afisareStudenti();
-            } else {
-                System.out.println("Comanda invalida!");
+            try {
+                System.out.println("\n0.Iesire meniu student");
+                System.out.println("1.Introducere student");
+                System.out.println("2.Stergere student");
+                System.out.println("3.Cautare student");
+                System.out.println("4.Modificare student");
+                System.out.println("5.Afisare lista studenti");
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Introduceti comanda: ");
+                int comanda = scanner.nextInt();
+
+                switch (comanda) {
+                    case 0:
+                        return;
+                    case 1:
+                        adaugaStudent();
+                        break;
+                    case 2:
+                        stergeStudent();
+                        break;
+                    case 3:
+                        cautareStudent();
+                        break;
+                    case 4:
+                        updateStudent();
+                        break;
+                    case 5:
+                        afisareStudenti();
+                        break;
+                    default:
+                        System.out.println("Comanda invalida!");
+                        break;
+                }
             }
+            catch (ValidationException exception) {
+                System.out.println(exception.getMessage());
+            } catch (InputMismatchException exception) {
+                System.out.println("Date introduse gresit!");
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                System.out.println("Eroare la introducerea datelor!");
+            }
+
         }
+
     }
 
     /**
@@ -102,7 +124,7 @@ public class UI {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Introduceti id student: ");
         String idStudent = scanner.next();
-        if (service.findStudent(idStudent) != null) {
+        if (studentService.findOne(idStudent) != null) {
             throw new ValidationException("Studentul exista!");
         }
         System.out.print("Introduceti numele: ");
@@ -113,11 +135,12 @@ public class UI {
         System.out.print("Introduceti email: ");
         String email = scanner.next();
         Student student = new Student(idStudent, numeStudent, grupa, email);
-        Student student1 = service.addStudent(student);
+        Student student1 = studentService.add(student);
+
         if (student1 == null) {
             System.out.println("Student adaugat cu succes!");
         } else {
-            System.out.println("Studentul deja exista" + student1);
+            System.out.println("Studentul deja exista " + student1);
         }
     }
 
@@ -128,7 +151,7 @@ public class UI {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Introduceti id-ul student: pe care doriti sa il stergeti: ");
         String id = scanner.next();
-        Student student = service.deleteStudent(id);
+        Student student = studentService.delete(id);
         if (student == null) {
             System.out.println("Studentul nu exista!");
         } else {
@@ -143,7 +166,7 @@ public class UI {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Introduceti id-ul studentului: ");
         String id = scanner.next();
-        Student student = service.findStudent(id);
+        Student student = studentService.findOne(id);
         if (student == null) {
             System.out.println("Studentul nu exista!");
         } else {
@@ -167,11 +190,12 @@ public class UI {
         System.out.print("Introduceti email: ");
         String email = scanner.next();
         Student student = new Student(id, nume, grupa, email);
-        Student student1 = service.updateStudent(student);
+        Student student1 = studentService.update(student);
+
         if (student1 == null) {
-            System.out.print("Studentul nu exista!");
-        } else {
             System.out.println("Student modificat cu succes!" + student1);
+        } else {
+            System.out.print("Studentul nu exista!");
         }
     }
 
@@ -179,45 +203,60 @@ public class UI {
      * Afiseaza lista studentilor
      */
     private void afisareStudenti() {
-        Iterable<Student> all = service.getAllStudenti();
-        all.forEach(student ->
-                System.out.println(student)
-        );
+        Iterable<Student> all = studentService.findAll();
+        all.forEach(System.out::println);
     }
 
     /**
      * Afiseaza comenzile pentru teme
      */
     private void meniuTeme() {
+
         while (true) {
-            System.out.println("\n0.Iesire meniu teme");
-            System.out.println("1.Introducere tema");
-            System.out.println("2.Prelungire deadline");
-            System.out.println("3.Stergere tema");
-            System.out.println("4.Cautare tema");
-            System.out.println("5.Modificare tema");
-            System.out.println("6.Afisare lista teme");
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("Introduceti comanda: ");
-            int comanda = scanner.nextInt();
-            if (comanda == 0) {
-                break;
-            } else if (comanda == 1) {
-                adaugaTema();
+            try {
+                System.out.println("\n0.Iesire meniu teme");
+                System.out.println("1.Introducere tema");
+                System.out.println("2.Prelungire deadline");
+                System.out.println("3.Stergere tema");
+                System.out.println("4.Cautare tema");
+                System.out.println("5.Modificare tema");
+                System.out.println("6.Afisare lista teme");
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Introduceti comanda: ");
+                int comanda = scanner.nextInt();
+
+                switch (comanda) {
+                    case 0:
+                        return;
+                    case 1:
+                        adaugaTema();
+                        break;
+                    case 2:
+                        prelungireDeadline();
+                        break;
+                    case 3:
+                        stergeTema();
+                        break;
+                    case 4:
+                        cautareTema();
+                        break;
+                    case 5:
+                        updateTema();
+                        break;
+                    case 6:
+                        afisareTeme();
+                        break;
+                    default:
+                        System.out.println("Comanda invalida!");
+                        break;
+                }
             }
-            else if(comanda==2) {
-                prelungireDeadline();
-            }
-            else if (comanda == 3) {
-                stergeTema();
-            } else if (comanda == 4) {
-                cautareTema();
-            } else if (comanda == 5) {
-                updateTema();
-            } else if (comanda == 6) {
-                afisareTeme();
-            } else {
-                System.out.println("Comanda invalida!");
+            catch (ValidationException exception) {
+                System.out.println(exception.getMessage());
+            } catch (InputMismatchException exception) {
+                System.out.println("Date introduse gresit!");
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                System.out.println("Eroare la introducerea datelor!");
             }
         }
     }
@@ -230,18 +269,18 @@ public class UI {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Introduceti nr tema: ");
         String nrTema = scanner.next();
-        if (service.findTema(nrTema) != null) {
+        if (temaService.findOne(nrTema) != null) {
             throw new ValidationException("Tema exista deja!");
         }
         System.out.print("Introduceti descrierea: ");
         scanner.nextLine();
         String descriere = scanner.nextLine();
-        System.out.print("Introduceti deadline-ul(nr saptamanii): ");
-        int deadline = scanner.nextInt();
         System.out.print("Introduceti saptamana primirii: ");
         int primire = scanner.nextInt();
+        System.out.print("Introduceti deadline-ul(nr saptamanii): ");
+        int deadline = scanner.nextInt();
         Tema tema = new Tema(nrTema, descriere, deadline, primire);
-        tema = service.addTema(tema);
+        tema = temaService.add(tema);
         if (tema == null) {
             System.out.println("Tema adaugata cu succes!");
         } else {
@@ -259,7 +298,7 @@ public class UI {
         String nrTema = scanner.next();
         System.out.print("Introduceti deadline nou: ");
         int deadline = scanner.nextInt();
-        service.prelungireDeadline(nrTema, deadline);
+        temaService.prelungireDeadline(nrTema, deadline);
         System.out.println("Dealine prelungit!");
     }
 
@@ -270,7 +309,7 @@ public class UI {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Introduceti id-ul temei: pe care doriti sa o stergeti: ");
         String id = scanner.next();
-        Tema tema = service.deleteTema(id);
+        Tema tema = temaService.delete(id);
         if (tema == null) {
             System.out.println("Tema nu exista!");
         } else {
@@ -285,7 +324,7 @@ public class UI {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Introduceti id-ul temei: ");
         String id = scanner.next();
-        Tema tema = service.findTema(id);
+        Tema tema = temaService.findOne(id);
         if (tema == null) {
             System.out.println("Tema nu exista!");
         } else {
@@ -304,16 +343,23 @@ public class UI {
         System.out.print("Introduceti descrierea: ");
         scanner.nextLine();
         String descriere = scanner.nextLine();
-        System.out.print("Introduceti deadline: ");
-        int deadline = scanner.nextInt();
+
         System.out.print("Introduceti saptamana primire: ");
         int primire = scanner.nextInt();
+
+        System.out.print("Introduceti deadline: ");
+        int deadline = scanner.nextInt();
+
         Tema tema = new Tema(id, descriere, deadline, primire);
-        Tema tema1 = service.updateTema(tema);
+        Tema tema1 = temaService.update(tema);
+
+
+        // returned null if the object is modified
+        // returned the object if it doesn't exist
         if (tema1 == null) {
-            System.out.println("Tema nu exista!");
-        } else {
             System.out.println("Tema modificata cu succes!" + tema1);
+        } else {
+            System.out.println("Tema nu exista!");
         }
     }
 
@@ -321,11 +367,8 @@ public class UI {
      * Afiseaza toate temele
      */
     private void afisareTeme(){
-        Iterable<Tema> all = service.getAllTeme();
-        //for(Tema tema: all){
-        //    System.out.println(tema);
-        //}
-        all.forEach(tema -> System.out.println(tema));
+        Iterable<Tema> all = temaService.findAll();
+        all.forEach(System.out::println);
     }
 
     /**
@@ -333,27 +376,44 @@ public class UI {
      */
     private void meniuNote() {
         while (true) {
-            System.out.println("\n0.Iesire meniu note");
-            System.out.println("1.Introducere nota");
-            System.out.println("2.Stergere nota");
-            System.out.println("3.Cautare nota");
-            System.out.println("4.Afisare lista note");
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("Introduceti comanda: ");
-            int comanda = scanner.nextInt();
-            if (comanda == 0) {
-                break;
-            } else if (comanda == 1) {
-                adaugaNota();
-            } else if (comanda == 2) {
-                stergeNota();
-            } else if (comanda == 3) {
-                cautareNota();
-            } else if (comanda == 4) {
-                afisareNote();
-            } else {
-                System.out.println("Comanda invalida!");
+            try {
+                System.out.println("\n0.Iesire meniu note");
+                System.out.println("1.Introducere nota");
+                System.out.println("2.Stergere nota");
+                System.out.println("3.Cautare nota");
+                System.out.println("4.Afisare lista note");
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Introduceti comanda: ");
+                int comanda = scanner.nextInt();
+
+                switch (comanda) {
+                    case 0:
+                        return;
+                    case 1:
+                        adaugaNota();
+                        break;
+                    case 2:
+                        stergeNota();
+                        break;
+                    case 3:
+                        cautareNota();
+                        break;
+                    case 4:
+                        afisareNote();
+                        break;
+                    default:
+                        System.out.println("Comanda invalida!");
+                        break;
+                }
+            } catch (ValidationException exception) {
+                System.out.println(exception.getMessage());
+            } catch (InputMismatchException exception) {
+                System.out.println("Date introduse gresit!");
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                System.out.println("Eroare la introducerea datelor!");
             }
+
+
         }
     }
 
@@ -368,11 +428,11 @@ public class UI {
         System.out.print("Introduceti numarul temei: ");
         String nrTema = scanner.next();
         String idNota = idStudent + "#" + nrTema;
-        if (service.findNota(idNota) != null) {
+        if (notaService.findOne(idNota) != null) {
             throw new ValidationException("Nota exista deja!");
         }
         System.out.print("Introduceti nota: ");
-        Double nota = scanner.nextDouble();
+        double nota = scanner.nextDouble();
         System.out.print("Introduceti data predarii temei(format: an-luna-data): ");
         String data = scanner.next();
         String[] date = data.split("-");
@@ -381,8 +441,8 @@ public class UI {
         scanner.nextLine();
         String feedback = scanner.nextLine();        //System.out.println(feedback);
         Nota notaCatalog = new Nota(idNota, idStudent, nrTema, nota, dataPredare);
-        double notaFinala = service.addNota(notaCatalog, feedback);
-        System.out.println("Nota maxima pe care o poate primi studentul este: " + notaFinala);
+        Nota notaFinala = notaService.add(notaCatalog);
+        System.out.println("Nota maxima pe care o poate primi studentul este: " +  notaService.addFeedback(notaFinala, feedback));
     }
 
     /**
@@ -395,7 +455,7 @@ public class UI {
         System.out.print("Introduceti nr-ul temei: ");
         String nrTema = scanner.next();
         String idNota = idStudent + "#" + nrTema;
-        Nota nota = service.deleteNota(idNota);
+        Nota nota = notaService.delete(idNota);
         if (nota == null) {
             System.out.println("Nota nu exista!");
         } else {
@@ -413,7 +473,7 @@ public class UI {
         System.out.print("Introduceti nr-ul temei: ");
         String nrTema = scanner.next();
         String idNota = idStudent + "#" + nrTema;
-        Nota nota = service.findNota(idNota);
+        Nota nota = notaService.findOne(idNota);
         if (nota == null) {
             System.out.println("Nota nu exista!");
         } else {
@@ -425,9 +485,7 @@ public class UI {
      * Afiseaza toate notele
      */
     private void afisareNote() {
-        Iterable<Nota> all = service.getAllNote();
-        all.forEach(nota ->
-                System.out.println(nota)
-        );
+        Iterable<Nota> all = notaService.findAll();
+        all.forEach(System.out::println);
     }
 }

@@ -65,7 +65,7 @@ public class Nota implements HasID<String> {
 
     @Override
     public String toString() {
-        return idStudent + "," + idTema + "," + nota + "," + data;
+        return id + ", " + idStudent + "," + idTema + "," + nota + "," + data;
     }
 
     /**

@@ -47,6 +47,7 @@ public class AppTest
     public void addStudentWithValidName_ShouldReturnTrue()
     {
         initialize();
+        // before each
         Student student = getValidStudent();
         try{
             Student addedStudent = service.addStudent(student);

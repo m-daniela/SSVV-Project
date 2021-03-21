@@ -80,12 +80,13 @@ public abstract class AbstractXMLRepository<ID, E extends HasID<ID>> extends Abs
    @Override
     public E save(E entity) {
        E entity1 = super.save(entity);
-       if (entity1 == null) {
-            //saveToFile(entity);
+//       if (entity1 != null) {
+//            saveToFile(entity);
+//       writeToFile();
+//       }
        writeToFile();
-       }
 
-        return entity1;
+       return entity1;
    }
     /**
      * Rescrie fisierul cu toate obiectele din memorie
@@ -150,9 +151,9 @@ public abstract class AbstractXMLRepository<ID, E extends HasID<ID>> extends Abs
     @Override
     public E update(E entity) {
         E entity1 = super.update(entity);
-        if(entity == null){
-            writeToFile();
-        }
+        writeToFile();
+//        if(entity == null){
+//        }
         return entity1;
     }
 }

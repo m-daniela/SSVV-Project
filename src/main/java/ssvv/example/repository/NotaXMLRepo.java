@@ -19,6 +19,11 @@ public class NotaXMLRepo extends AbstractXMLRepository<String, Nota> {
     @Override
     public Element createElementfromEntity(Document document, Nota entity) {
         Element e = document.createElement("nota");
+        e.setAttribute("idNota", entity.getID());
+
+//        Element id = document.createElement("idNota");
+//        id.setTextContent(entity.getIdStudent() + "#" + entity.getIdTema());
+//        e.appendChild(id);
 
         Element idStudent = document.createElement("idStudent");
         idStudent.setTextContent(entity.getIdStudent());
@@ -29,8 +34,8 @@ public class NotaXMLRepo extends AbstractXMLRepository<String, Nota> {
         e.appendChild(idTema);
 
         Element notaProf = document.createElement("notaProf");
-        Double i=entity.getNota();
-        notaProf.setTextContent(i.toString());
+        double i = entity.getNota();
+        notaProf.setTextContent(String.valueOf(i));
         e.appendChild(notaProf);
 
         Element data = document.createElement("dataCurenta");
@@ -49,8 +54,7 @@ public class NotaXMLRepo extends AbstractXMLRepository<String, Nota> {
      */
     @Override
     public Nota extractEntity(Element element) {
-        String id = element.getAttribute("id");
-        NodeList nods = element.getChildNodes();
+        String id = element.getAttribute("idNota");
 
         String studentId =element.getElementsByTagName("idStudent")
                 .item(0)
@@ -63,7 +67,6 @@ public class NotaXMLRepo extends AbstractXMLRepository<String, Nota> {
         String notaProf =element.getElementsByTagName("notaProf")
                 .item(0)
                 .getTextContent();
-
 
         String data =element.getElementsByTagName("dataCurenta")
                 .item(0)

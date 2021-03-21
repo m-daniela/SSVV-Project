@@ -23,7 +23,6 @@ public class StudentXMLRepo extends AbstractXMLRepository<String, Student> {
     @Override
     public Student extractEntity(Element element) {
         String studentId = element.getAttribute("idStudent");
-        NodeList nods = element.getChildNodes();
         String nume =element.getElementsByTagName("nume")
                 .item(0)
                 .getTextContent();
@@ -47,8 +46,8 @@ public class StudentXMLRepo extends AbstractXMLRepository<String, Student> {
         e.appendChild(nume);
 
         Element grupa = document.createElement("grupa");
-        Integer g=entity.getGrupa();
-        grupa.setTextContent(g.toString());
+        int nrGrupa = entity.getGrupa();
+        grupa.setTextContent(String.valueOf(nrGrupa));
         e.appendChild(grupa);
 
         Element email = document.createElement("email");

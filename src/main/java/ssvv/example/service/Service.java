@@ -4,9 +4,7 @@ import ssvv.example.curent.Curent;
 import ssvv.example.domain.Nota;
 import ssvv.example.domain.Student;
 import ssvv.example.domain.Tema;
-import ssvv.example.repository.NotaXMLRepo;
-import ssvv.example.repository.StudentXMLRepo;
-import ssvv.example.repository.TemaXMLRepo;
+import ssvv.example.repository.*;
 import ssvv.example.validation.NotaValidator;
 import ssvv.example.validation.StudentValidator;
 import ssvv.example.validation.TemaValidator;
@@ -24,13 +22,13 @@ import static java.time.temporal.ChronoUnit.DAYS;
  */
 public class Service {
     //private StudentFileRepository studentFileRepository;
-    private StudentXMLRepo studentFileRepository;
-    private StudentValidator studentValidator;
     //private TemaFileRepository temaFileRepository;
-    private TemaXMLRepo temaFileRepository;
-    private TemaValidator temaValidator;
     //private NotaFileRepository notaFileRepository;
     private NotaXMLRepo notaFileRepository;
+    private TemaXMLRepo temaFileRepository;
+    private StudentXMLRepo studentFileRepository;
+    private StudentValidator studentValidator;
+    private TemaValidator temaValidator;
     private NotaValidator notaValidator;
 
     /**
@@ -42,8 +40,18 @@ public class Service {
      * @param notaFileRepository - repository nota
      * @param notaValidator - validator nota
      */
-    //public Service(StudentFileRepository studentFileRepository, StudentValidator studentValidator, TemaFileRepository temaFileRepository, TemaValidator temaValidator, NotaFileRepository notaFileRepository, NotaValidator notaValidator) {
-    public Service(StudentXMLRepo studentFileRepository, StudentValidator studentValidator, TemaXMLRepo temaFileRepository, TemaValidator temaValidator, NotaXMLRepo notaFileRepository, NotaValidator notaValidator) {
+//    public Service(StudentFileRepository studentFileRepository,
+//                   StudentValidator studentValidator,
+//                   TemaFileRepository temaFileRepository,
+//                   TemaValidator temaValidator,
+//                   NotaFileRepository notaFileRepository,
+//                   NotaValidator notaValidator) {
+    public Service(StudentXMLRepo studentFileRepository,
+                   StudentValidator studentValidator,
+                   TemaXMLRepo temaFileRepository,
+                   TemaValidator temaValidator,
+                   NotaXMLRepo notaFileRepository,
+                   NotaValidator notaValidator) {
 
         this.studentFileRepository = studentFileRepository;
         this.studentValidator = studentValidator;
@@ -191,18 +199,10 @@ public class Service {
         System.out.println("Tema predata dupa " + delay + " saptamani este " + nota.getNota());
 
 
-//        if(predare != tema.getDeadline()){
-//            System.out.println("Tema predata dupa " + (predare-tema.getDeadline()) + " saptamani");
-//            if (predare-tema.getDeadline() == 1){
-//                nota.setNota(nota.getNota()-2.5);
-//            }
-//            else{
-//                throw new ValidationException("Studentul nu mai poate preda aceasta tema!");
-//            }
-//        }
+
 
         notaFileRepository.save(nota);
-        String filename = "fisiere/" + student.getNume() + ".txt";
+        String filename = "src/main/java/ssvv/example/fisiere/" + student.getNume() + ".txt";
         try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filename, true))){
             bufferedWriter.write("\nTema: " + tema.getID());
             bufferedWriter.write("\nNota: " + nota.getNota());
